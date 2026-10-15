@@ -1,6 +1,10 @@
 {
     "rewrites": [
         {
+            "source": "/_proxy/health",
+            "destination": "/api/health"
+        },
+        {
             "source": "/(.*)",
             "destination": "/api/proxy"
         }
