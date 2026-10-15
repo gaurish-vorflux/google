@@ -2,37 +2,38 @@
 
 声明：此项目仅供技术学习，不进行任何获利
 
+## Configuration
+
+The proxy sends requests to `https://www.google.com/` by default. Set
+`PROXY_TARGET_URL` to use another HTTP or HTTPS target without editing source
+code.
+
+```bash
+PROXY_TARGET_URL=https://example.com/ npm run dev
+```
+
+Use `/_proxy/health` to check the proxy configuration. The endpoint returns the
+proxy status, target origin, and current timestamp without contacting the target.
+
 ## Quick start
 
 Chinese Notice: 如果无法查看此文档中的图片,请下载次项目后在自己电脑查看此 README.md
 
 1、Fork this repository
 
-2、Please rewrite the target host name in api/proxy.js to "google.com" by default.
+2、Set `PROXY_TARGET_URL` to the target host. It uses "google.com" by default.
 
 ```js
 const { createProxyMiddleware } = require("http-proxy-middleware");
+const target = process.env.PROXY_TARGET_URL || "https://www.google.com/";
+
+const proxy = createProxyMiddleware({
+  target,
+  changeOrigin: true,
+});
 
 module.exports = (req, res) => {
-  let target = "https://www.google.com/"; //your website url
-  //   if (
-  //     req.url.startsWith("/api") ||
-  //     req.url.startsWith("/auth") ||
-  //     req.url.startsWith("/banner") ||
-  //     req.url.startsWith("/CollegeTask")
-  //   ) {
-  //     target = "http://106.15.2.32:6969";
-  //   }
-
-  createProxyMiddleware({
-    target,
-    changeOrigin: true,
-    pathRewrite: {
-      // rewrite request path `/backend`
-      //  /backend/user/login => http://google.com/user/login
-      //   "^/backend/": "/",
-    },
-  })(req, res);
+  proxy(req, res);
 };
 ```
 
